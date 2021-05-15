@@ -9,8 +9,8 @@ HTML是用来描述网页的一种语言。
 
 ## HTML标签
 HTML标记标签通常被称为HTML标签（HTML Tag）
-+ HTML标签是由尖括号包围的关键词，比如<html>
-+ HTML标签通常是成对出现的，比如<b>和</b>
++ HTML标签是由尖括号包围的关键词，比如`<html>`
++ HTML标签通常是成对出现的，比如`<b>` 和 `</b>`
 + 标签对中的第一个标签是开始标签，第二个标签是结束标签
 + 开始和结束标签也被称为开放标签和闭合标签
 
@@ -39,7 +39,7 @@ HTML可以拥有属性
 + DOCTYPE不存在或形式不正确会导致HTML文档以混杂模式呈现
 + 标准模式以浏览器支持的最高标准执行;混杂模式中页面是一种向后兼容的方式显示
 
-### HTML5为什么只需要写<!DOCTYPE HTML>?
+### HTML5为什么只需要写`<!DOCTYPE HTML>?`
 + HTML5不基于SGML(Standard Generalized Markup Language 标准通用标记语言)，因此不需要对DTD进行引用，但是需要DOCTYPE来规范行为。
 
 ### 内联元素有哪些？块级元素有哪些？空(void)元素有哪些？
@@ -53,35 +53,29 @@ HTML可以拥有属性
 + link是xhtml标签，无兼容问题。@import是CSS2.1提出来的，低版本的浏览器不支持
 + link支持使用javascript控制去改变样式，而@import不支持
 + link方式的样式的权重高于@import的权重
-+ import在html使用时候需要<style type="text/css"></style>标签
++ import在html使用时候需要`<style type="text/css"></style>`标签
 
-### 无样式内容闪烁
 + @import导入CSS文件会等到文档加载完后再加载CSS样式表。因此，在页面DOM加载完成到CSS导入完成之间会有一段时间页面上的内容是没有样式的。
 + 解决办法：使用link标签加载CSS样式文件。因为link是顺序加载的，这样页面会等到CSS下载完之后再下载HTML文件，这样先布局好，就不会出现闪烁问题。
-  
 ### 介绍一下你对浏览器内核的理解？
 + 主要分成两部分：渲染引擎和JS引擎
 + 渲染引擎：负责取得网页的内容（XTML、XML、图像等等）、整理讯息（例如加入CSS等），以及计算网页的显示方式，然后会输出至显示器。
 + JS引擎：解析和执行javascript来实现网页的动态效果。
 + 最开始渲染引擎和JS引擎并没有区分的很明确，后来JS引擎越来越独立，内核就倾向于只指渲染引擎。
-  
 ### 常见的浏览器内核有哪些？
 + IE: Trident
 + Chrom: Webkit
 + Opear: Presto
 + FirFox Mozilla: Geckos
-  
 ### HTML5有哪些新特性，移除了那些元素？如何处理HTML5新标签的浏览器兼容问题？如何区分HTML和HTML5
 + 语义化标签、增强型表单、DOM扩展、原生播放、媒体元素等
 + 移除的元素：basefont、big、center、font、s、strike、tt、u、frame、frameset、noframes
 + 区分：DOCTYPE声明的方式是区分重要因素，根据新增加的结构、元素、功能来区分。
-  
 ### 简述一下你对HTML语义化的理解？
-+ 去掉或丢失样式的时候能够让页面呈现出清晰的结构
++ 去掉样式的时候能够让页面呈现出清晰的结构
 + 有利于SEO和搜索引擎建立良好沟通，有助于爬虫爬取更多的信息，爬虫依赖于标签来确定上下文和各个关键字的权重。
 + 方便其它设备解析
 + 便于团队开发和维护，语义化根据可读性。
-  
 ### HTML5的文件离线储存怎么使用，工作原理是什么？
 + 在线情况下，浏览器发现HTML头部有manifest属性，它会请求manifest文件，如果是第一次访问，那么浏览器就会根据manifest文件的内容下载相应的资源，并进行离线存储。如果已经访问过并且资源已经离线存储了，那么浏览器就会使用离线的资源加载页面。然后浏览器会对比新的manifest文件与旧的manifest文件，如果文件没有发生改变，就不会做任何操作，如果文件改变了，那么就会重新下载文件中的资源，并且进行离线存储。
 ```html 
@@ -141,11 +135,9 @@ FALLBACK:
 ### WebSocket如何兼容低浏览器？
 + Adobe Flash Socket ActiveX HTMLFile(IE)基于multipart编码发送XHR基于长轮询的XHR
 + 引用WebSocket.js这个文件来兼容低版本浏览器。
-  
 ### 页面可见性（Page Visibility）API可以有哪些用途？
 + 通过visibility state的值检测页面当前是否可见，以及打开网页的时间
 + 在页面被切换到其它后台进程时，自动暂停音乐或视频的播放。
-  
 ### 如何在页面上实现一个圆形的可点击区域？
 + map+area或者svg
 + border-radius
@@ -162,11 +154,9 @@ FALLBACK:
 
 ### title标题与h1的区别、b与strong的区别、i与em的区别？
 + title属性没有明确意义，只表示标题。h1表示层次明确的标题，对页面信息的抓取也有很大的影响
-+ strong标明重点内容，证据加强含义。b是无意义的视觉表示 
++ strong标明重点内容，证明加强含义。b是无意义的视觉表示 
 + em表示强调文本。i是斜体，是无意义的视觉表示
-  
 ### 元素的alt和title有什么异同
 + title是图片在滑动经过时显示的信息
 + alt是图片在src没有填写时替代显示的信息
-
 
