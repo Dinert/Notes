@@ -83,7 +83,7 @@
 + 选择每一个选中的元素：`:checked`
 
 ### 水平垂直居中元素
-+ 1.margin + float
++ 1.margin + position
 ```CSS
   .box{
     width: 200px;
@@ -95,7 +95,79 @@
     margin-left: -100px;
   }
 ```
++ 2.position + translate
+```css
+  .box{
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+```
++ 3.position + margin: auto
+```css
+  .box{
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+  }
+```
++ 4.flex布局
+```css
+  .wrap{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .wrap   .box{
+    width: 200px;
+    height: 200px;
+  }
+```
++ 5.flex + margin
+```css
+  .wrap{
+    display: flex;
+  }
+  .wrap .box{
+    width: 200px;
+    height: 200px;
+    margin: auto;
+  }
+```
 
+### display有哪些值？说明他们的作用
++ 内联（默认）：`inline`
++ 隐藏：`none`
++ 块显示：`block`
++ 表格显示：`table`
++ 项目列表：`list-item`
++ 内联块：`inline-block`
+
+### positon有哪些值？
++ 按照正常文档流进行排列：`static`
++ 相对定位，不脱离文档流，参考自身静态位置通过top,bottom,left,right定位: `relative`
++ 绝对定位，参考距其最近一个不为static的父级元素通过top,bottom,left,right定位：`absolute`
++ 参照html根元素进行定位：`fixed`
+
+### CSS3有哪些新特性？
++ RGBA和透明度
++ background-image、background-repeat、background-size
++ 文字阴影：`text-shadow`
++ 圆角：`border-radius`
++ 边框图片：`border-image`
++ 盒阴影：`box-shadow`
++ 媒体查询`@media`
+
+### 请解释一下CSS3的flexbox（弹性盒布局模型），以及适用场景？
++ 该布局模型的目的是提供一种更加高效的方式来对容器中的条目进行布局、对齐和分配空间。在传统的布局方式中，block布局是把块在垂直方向从上到下依次排列的，而inline布局则是在水平方向来排列。弹性盒布局并没有这样内在的方向限制，可以由开发人员自由操作
 
 
 
