@@ -52,8 +52,49 @@
   - 在元素后面插件内容：`:after`
 
 ## 面试题
-### 介绍一下标准的CSS的盒模型？与低版本IE的盒子
+### 介绍一下标准的CSS的盒模型？与低版本IE的盒子 
++ 标准盒子模型：width = (content) + border + padding + margin;
++ IE盒子模型：width = (content + padding + border) + margin;
 
+### box-sizing属性？
++ 用来控制元素的盒模型的解析模式，默认为content-box
+  - content-box：W3C的标准盒子模型，设置元素的height/width属性指的是content部分的高/宽
+  - border-box: IE传统盒子模型。设置元素的height/width属性指的是border + padding + border部分的高/宽
+
+### CSS选择器有哪些？哪些属性可以继承？
++ CSS选择器：Id选择器(#id)、类选择器(.class)、标签选择器(div、p)、相邻选择器(h1 + p)、子选择器(ul > li)、后代选择器(li a)、通配符选择器(*)、属性选择器([name="value"])、伪类选择器(:hover)、伪元素选择器(::before、::after)
++ 可继承的属性：color、text-align、line-height、font-family
++ 不可继承的样式：border、padding、margin、width、height、position
+
+### CSS优先级算法如何计算？
++ 元素选择器：1
++ class选择器、属性选择器：10
++ id选择器：100
++ 内联写法：1000
+  - !import声明的样式优先级最高，如果冲突再进行计算
+  - 如果优先级相同，则选择最后出现的样式
+  - 继承得到的样式优先级最低
+
+### CSS3新增伪类有哪些？
++ 选择每个p元素是其父级的第一个p元素：`:first-of-type`
++ 选择每个p元素是其父级的最后一个p元素：`:last-of-type`
++ 选择每一个禁用的元素：`:disabled`
++ 选择每一个启用的元素：`:enabled`
++ 选择每一个选中的元素：`:checked`
+
+### 水平垂直居中元素
++ 1.margin + float
+```CSS
+  .box{
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -100px;
+    margin-left: -100px;
+  }
+```
 
 
 
