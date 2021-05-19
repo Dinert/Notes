@@ -167,7 +167,57 @@
 + 媒体查询`@media`
 
 ### 请解释一下CSS3的flexbox（弹性盒布局模型），以及适用场景？
-+ 该布局模型的目的是提供一种更加高效的方式来对容器中的条目进行布局、对齐和分配空间。在传统的布局方式中，block布局是把块在垂直方向从上到下依次排列的，而inline布局则是在水平方向来排列。弹性盒布局并没有这样内在的方向限制，可以由开发人员自由操作
++ 该布局模型的目的是提供一种更加高效的方式来对容器中的条目进行布局、对齐和分配空间。在传统的布局方式中，block布局是把块在垂直方向从上到下依次排列的，而inline布局则是在水平方向来排列。弹性盒布局并没有这样内在的方向限制，可以由开发人员自由操作。
++ 适用场景：弹性布局适合于移动前端开发，在Android和ios上也完美支持。
+
+### 用纯CSS创建一个三角形的原理是什么？
+```css
+  .box{
+    width: 0;
+    height: 0;
+    border-top: 40px solid transparent;
+    border-left: 40px solid transparent;
+    border-right: 40px solid transparent;
+    border-bottom: 40px solid #FF0000;
+  }
+```
+
+### 常见的兼容性问题？
++ 不同浏览器的标签默认的margin和padding不一样
++ 上下margin重合问题，相邻两个div的margin-top、margin-bottom会重合
++ 鼠标的手势：FireFox的cursor属性不支持hand，但是支持pointer，IE两个都支持，所以为了兼容都用point
++ 图片会有下边的间隙
+
+### 为什么要初始化CSS样式？
++ 因为浏览器的兼容问题，不同浏览器对有些标签的默认值是不同的，如果没对CSS初始化往往会出现浏览器之间页面的显示差异。
+
+### CSS里的visibility属性有个collapse属性值？在不同浏览器下有什么区别？
++ 当一个元素的visibility属性被设置成collapse值后，对于一般元素，它的表现跟hidden是一样的。
++ chrome中，使用collapse值和使用hidden没有区别。
++ firefox、opera和IE，使用collapse值和使用display: none没有什么区别
+
+### display:none与visibility: hidden的区别？
++ display: none不显示对应的元素，在文档布局中不再分配空间（回流 + 重绘）
++ visibility: hidden 隐藏对应元素，在文档布局仍保留原来的空间（重绘）
+
+### 对BFC规范（块级格式化上下文：block formatting context）的理解？
++ 具有BFC特性的元素可以看作是隔离了的独立容器，容器里面的元素不会在布局上影响到外面的元素，并且BFC具有普通容器所没有的一些特性
++ 触发BFC
+  - body根元素
+  - 浮动元素：float除none以外的值
+  - 绝对定位元素：position(absolute、fixed)
+  - display为inline-block、table-cells、flex
+  - overflow除了visible以外的值（hidden、auto、scroll）
+
+### 为什么会出现浮动和什么时候需要清除浮动？清除浮动的方式？
++ 浮动元素碰到包含它的边框或者浮动元素的边框停留。由于浮动元素不在文档流中，所以文档流的块框表现得就像浮动框不存在一样。浮动元素会漂浮在文档流的块框上。
++ 浮动带来的问题
+  - 父元素的高度无法被撑开，影响与父元素同级的元素
+  - 与浮动元素同级的非浮动元素（内联元素）会跟随其后
+  - 若非第一个元素浮动，则该元素之前的元素也需要浮动，否则会影响页面显示的结构
+
+
+
 
 
 
