@@ -309,8 +309,72 @@
     console.log(typeof(a) + ' : ' + a);
 ```
 
+### 函数
++ 函数名必须以英文名字、`_`、`$`开头
++ 函数名可以包括英文名字、`_`、`$`
++ 不能使用系统的关键字或保留字作为变量名
++ 普通函数使用小驼峰写法，构造函数使用大驼峰写法
+```javascript
+    function test() {}
+    var test = function () {}
+    var test = function test() {}
+```
++ 组成形式：
+  - 形参：指的是函数function sum(a, b) {} 括号里面的a和b
+  - 实参：指的是调用时用的参数sum(1, 2);
+  - 天生不定参，形参可以比实参多，实参可以比形参多
+```javascript
+    function sum(a, b) {
+        var c = a + b;
+    }
+    sum(1, 2);
+```
 
- 
++ 函数中的arguments（实参列表）
+```javascript
+    function sum(a, b) {
+        console.log(arguments);
+        console.log(sum.length);
+        console.log(arguments.length);
+    }
+    sum(1,2);
+```
+
++ 实参和形参的映射关系
+  - 实参和形参相同，相互影响
+  ```javascript
+    function test(a, b) {
+        arguments[0] = 123;
+        console.log(a);
+        b = 1234;
+        console.log(arguments[1]);
+    } 
+    test(1, 2);
+  ```
+
+  - 形参大于实参，不影响
+  ```javascript
+    function test(a, b) {
+        arguments[1] = 3;
+        console.log(b);
+        b = 4;
+        console.log(b);
+    }
+    test(1);
+  ```
+
+  - 返回值return有终止函数，返回数值的作用
+  ```javascript
+    function test() {
+        return 123;
+        console.log('a');
+    }
+    test();
+  ```
+
++ 函数的作用域
+
+
 
 
 
