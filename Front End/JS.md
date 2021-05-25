@@ -373,10 +373,573 @@
   ```
 
 + 函数的作用域
+ - 函数声明整体提升：函数不管写到哪里，都会被提到逻辑的最前面。所以不管在哪里调用，本质上都是在后面调用
+ - 彼此独立的区间不能相互访问，里面的可以访问外面的变量，外面的不能用里面的变量
+ - js运行三部分：语法解析 => 预编译 => 解释执行
 
++ 函数的预编译
+ - 创建AO对象
+ - 找形参和变量声明，将变量和形参名作为AO属性名，值为undefined
+ - 将实参值和形参统一（把实参值传到形参里）
+ - 在函数体里面找函数声明，值赋予函数体
+ ```javascript
+    test();
+    function test(a, b) {
+        console.log(a);
+        c = 0;
+        var c;
+        a = 3;
+        b = 2;
+        console.log(b);
+        function b() {}
+        function d() {}
+        console.log(b);
+    }
+    test(1);
+ ```
 
+ ```javascript
+    function test(a, b) {
+        console.log(a);
+        console.log(b);
+        var b = 234;
+        console.log(b);
+        a = 123;
+        console.log(a);
+        function a() {}
+        var a;
+        b = 234;
+        var b = function () {}
+        console.log(a);
+        console.log(b);
+    }
+    test(1);
+ ```
 
++ 全局的预编译
+ - 生成了一个GO的对象window
+ - 任何变量，如果变量未经声明就赋值，此变量就为全局对象（就是window）所有
+ - 一切声明的全局变量，全是window的属性，window应是全局的域
+ - 找形参和变量声明，将变量和形参名作为GO属性名，值为undefined
+ - 在函数体里面找函数声明，值赋予函数体 
+ ```javascript
+    function test() {
+        var a = b = 123;
+        console.log(window.b);
+    }
+    test();
+ ```
 
+ ```javascript
+    function test(test) {
+        console.log(test);
+        var test = 234;
+        console.log(test);
+        function test() {}
+    }
+    test(1);
+    var test = 123;
+ ```
+
+ ```javascript
+    global = 100;
+    function fn() {
+        console.log(global);
+        global = 200;
+        console.log(global);
+        var global = 300;
+    }
+    fn();
+    var global;
+ ```
+
+ ```javascript
+    function test() {
+        console.log(b);
+        if(a) {
+            var b = 100;
+        }
+        c = 234;
+        console.log(c);
+    }
+    var a;
+    test();
+    a = 10;
+    console.log(c);
+ ```
+
+ ```javascript
+    function bar() {
+        return foo;
+        foo = 10;
+        function foo() {}
+        var foo = 11;
+    }
+    console.log(bar());
+
+    console.log(bar());
+    function bar() {
+        foo = 10;
+        function foo() {}
+        var foo = 11;
+        return foo;
+    }
+ ```
+
+ ```javascript
+    a = 100;
+    function demo(e) {
+        function e() {}
+        arguments[0] = 2;
+        console.log(e);
+        if(a) {
+            var b = 123;
+            function c() {}
+        }
+        var c;
+        a = 10;
+        var a;
+        console.log(b);
+        f = 123;
+        console.log(c);
+        console.log(a);
+    }
+    var a;
+    demo(1);
+    console.log(a);
+    console.log(f);
+ ```
+
+ ```javascript
+    var str = false + 1;
+    console.log(str);
+    var demo = false == 1;
+    console.log(demo);
+    if(typeof a && -true + (undefined) + '') {
+        console.log('基础扎实');
+    }
+    if(11 + '11' * 2 == 33) {
+        console.log('基础扎实');
+    }
+    !!' ' + !!'' - !!false || console.log('你觉得能打印吗?');
+ ```
+
+ + 作用域精解
+   - 每个javascript函数都是一个对象，对象中有些属性我们可以访问，但有些不可以，这些属性仅供javascript引擎存取，[[scope]]就是其中一个。[[scope]]指的就是我们所说的作用域，其中存储运行期上下文的集合。
+   - 作用域链：[[scope]]中所存储的执行期上下文对象的集合，这个集合呈链式链接，我们把链式链接叫做作用域链。
+   - 运行期上下文：当函数在执行的前一刻，会创建一个称为执行期上下文的内部对象。一个执行期上下文定义了一个函数执行时的环境，函数每次执行时对应的执行上下文都是独一无二的。所以多次调用一个函数会导致创建多个执行上下文，当函数执行完毕，执行上下文被销毁。
+   - 查找变量：在哪个函数里面查找变量，就从哪个函数作用域链的顶端依次向下查找。函数类对象，我们能访问test.name
+   ```javascript
+    function a() {
+        function b() {
+            var bb = 234;
+            aa = 0;
+        }
+        var aa = 123;
+        b();
+        console.log(aa);
+    }
+    var global = 100;
+    a();
+   ```
++ 闭包
+  - 当内部函数被保存到外部时，将会生成闭包。闭包会导致原有的作用链不释放，造成内存泄露。
+  ```javascript
+    function a() {
+        function b(){
+            var bbb = 234;
+            console.log(aaa);
+        }
+        var aaa = 123;
+        return b;
+    }
+    var global = 100;
+    var demo = a();
+    demo();
+  ```
+
+  - 但凡是内部的函数被保存到外部，一定生成闭包
+  ```javascript
+    function a() {
+        var num = 100;
+        function b() {
+            num ++;
+            console.log(num);
+        }
+        return b;
+    }
+    var demo = a();
+    demo();
+    demo();
+  ```
+
+  - 在数组内打印10个函数，产生闭包
+  ```javascript
+    function test() {
+        var arr = []
+        for(var i = 0; i < 10; i ++) {
+            arr[i] = function () {
+                return i;
+            }
+        }
+        return arr;
+    }
+    var myArr = test();
+    for(var j = 0; j < 10; j ++) {
+        console.log(myArr[j]);
+    }
+  ```
+
+  - 解决方法
+  ```javascript
+    function test() {
+        var arr = [];
+        for(var i = 0; i < 10; i ++) {
+            (function (j) {
+                arr[j] = function () {
+                    return j;
+                }
+            }(i))
+        }
+        return arr;
+    } 
+    var myArr = test();
+    for(var j = 0; j < 10; j ++) {
+        console.log(myArr[j]);
+    }
+  ```
+
+  - 实现公有变量，函数累加器
+  ```javascript
+    function add() {
+        var count = 0;
+        function demo() {
+            count ++;
+            console.log(count);
+        }
+        return demo;
+    }
+    var myAdd = add();
+    myAdd();
+  ```
+
+  - 可以用做缓存（存储结构）
+  ```javascript
+    function test() {
+        var num = 100;
+        function a() {
+            num ++;
+            console.log(num);
+        }
+
+        function b() {
+            num --;
+            console.log(num);
+        }
+        return [a, b];
+    }
+    var myArr = test();
+    myArr[0]();
+    myArr[1]();
+  ```
+
+  - 缓存的应用，对象里面可以用属性和方法
+  ```javascript
+    function eater() {
+        var foo = '';
+        var obj = {
+            eat: function () {
+                console.log('I am eating' + foo);
+                foo = '';
+            },
+            push: function(myFoot) {
+                foo = myFoot;
+            }
+        }
+        return obj;
+    }
+    var eater1 = eater();
+    eater1.push('banner');
+    eater1.eat();
+  ```
+
+  - 属性私有化
+  ```javascript
+    function Peng() {
+        var preparWife = 'xiaozhange';
+        this.changePreparWife = function () {
+            console.log(preparWife);
+        }
+    }
+    var Peng = new Peng();
+  ```
+
+  - 防止污染全局，适用于模块化开发
+  ```javascript
+    var init = (function () {
+        var name = 'abc';
+        function callName() {
+            console.log(name);
+        }
+        return function () {
+            callName();
+        }
+    }());
+  ```
+
++ 立即执行函数
+  - 定义：此类函数没有声明，在一次执行过后即释放（被销毁）
+  - 适合做初始化工作，针对初始化功能的函数
+  - 只想让它执行一次的函数
+  - 立即报告的函数也有参数，也有返回值，有预编译
+  ```javascript
+    (function () {} ())
+    (function () {})()
+    +function () {}()
+    -function () {}()
+    !function () {}()
+    var test = function () {console.log('a');}()
+  ```
+
++ 构造函数
+  - 必须用new这个操作符，才能构造出对象
+  - 构造函数必须要按照大驼峰式命名规则，但凡是构造函数就要大写
+  ```javascript
+    function Test() {}
+    var test = new Test();
+  ```
+
+  - 每个构造函数构造出来都是独一无二的，函数名相同，但彼此独立
+  ```javascript
+    function Car() {
+        this.name = 'BMW';
+    }
+    var car = new Car();
+    var car1 = new Car();
+    console.log(car === car1);
+  ```
+
+  - 在函数体最前面隐式的加上`var this = {}`空对象
+  - 执行`this.xxx = xxx;`
+  - 隐式的返回 `return this;`
+  ```javascript
+    function Student(name) {
+        this.name = {
+            ccc: 'b'
+        }
+    }
+    var student = new Student({ccc: '22222'});
+  ```
+
++ 原型
+  - 原型是`function`对象的一个属性，它定义了构造函数制造出的对象的公共祖先。通过构造函数产生的对象，可以继承该原型的属性和方法，原型也是对象。
+  ```javascript
+    Person.prototype.name = 'hehe';
+    function Person() {}
+    var person = new Person();
+    var person1 = new Person();
+  ```
+
+  - 利用原型特点和概念，可以提取共有属性
+  ```javascript
+    Car.prototype.carName = 'BMW';
+    // 简写
+    Car.prototype = {carName: 'BMW'}
+    function Car() {this.carName = 'BMW'}
+    var car = new Car();
+  ```
+
+  - 原型上属性增删改查：通过对象后代必原型链的属性是不行的，只会在当前对象修改属性，并新增一个属性
+  ```javascript
+    Person.prototype.lastName = 'Deng';
+    function Person(name) {
+        this.name = name;
+    }
+    var person = new Person('xuming');
+    person.lastName = 'james';
+  ```
+
+  - 对象如何查看原型 ==> 隐式属性 __proto__
+  ```javascript
+    function Car() {}
+    var car = new Car();
+    console.log(Car.prototype);
+    console.log(car.__proto__);
+  ```
+
+  - 对象如何查看对象的构造函数 ==> `constructor`
+  ```javascript
+    function Car() {}
+    var car = new Car();
+    console.log(car.constructor);
+  ```
+
+  - constructor可以被人工手动更改
+  ```javascript
+    var Person = function () {}
+    Car.prototype = {
+        constructor: Person
+    }
+    function Car() {}
+    var car = new Car();
+    console.log(car.constructor);
+  ```
++ 原型链
+  - 如何构成原型链
+  ```javascript
+    Grand.prototype.lastName = 'Deng';
+    function Grand() {}
+    var grand = new Grand();
+    Father.prototype = grand;
+    function Father() {}
+    var father = new Father();
+    Son.prototype =father;
+    function Son() {}
+    var son = new Son();
+  ```
+
+  - 原型链上属性的增删改查
+  ```javascript
+    Grand.prototype.lastName = 'Deng';
+    function Grand() {}
+    var grand = new Grand();
+    Father.prototype = grand;
+    function Father() {
+        this.name = 'xuming';
+        this.fortune = {
+            card1: 'visa'
+        }
+    }
+    var father = new Father();
+    Son.prototype = father;
+    function Son() {
+        this.hobbit = 'smoke';
+    }
+    var son = new Son();
+    son.fortune.card2 = 'master';
+    console.log(son.fortune);
+    console.log(father.fortune);
+  ```
+
+  - Object.create（原型）
+  - 绝大多数对象最终都会继承自Object.prototype
+  - Object.create()在括号里面只能放null或者Object，其余会报错
+  ```javascript
+    var obj = {name: 'sunny', age: 123};
+    var obj1 = Object.create(obj);
+    Person.prototype.name = 'sunny';
+    function Person() {}
+    var person = Object.create(Person);
+    console.log(person.prototype);
+    console.log(Person.prototype);
+  ```
+
+  - toString的重写
+  ```javascript 
+    Object.prototype.toString;
+    Array.prototype.toString;
+    Number.prototype.toString;
+    String.prototype.toString;
+    Boolean.prototype.toString;
+
+    Number.prototype.toString = function () {
+        return 1234;
+    }
+    ```
+
+    - document.write会隐式的调用toString方法，其实打印的是toString的结果
+    ```javascript
+        var obj = Object.create(null);
+        obj.toString = function () {
+            return '13231';
+        }
+        document.write(obj);
+    ```
+
+    - arguments.callee指向函数的引用（函数自身）
+    ```javascript
+        function test() {
+            console.log(arguments.callee);
+            function a() {
+                console.log(arguments.callee);
+            }
+            a();
+        }
+        test();
+    ```
+
+    - caller指谁调用的环境
+    ```javascript
+        function test() {
+            demo();
+        }
+
+        function demo() {
+            console.log(demo.caller);
+        }
+        test();
+    ```
+
++ 继承的四种方式
+    - 传统形式：原型链
+    ```javascript
+        Grand.prototype.lastName = 'Deng';
+        function Grand() {}
+        var grand = new Grand();
+        Father.prototype = grand;
+        function Father() {}
+        var father = new Father();
+        Son.prototype = father;
+        function Son() {}
+    ```
+
+    - 借用构造函数，call、apply
+    ```javascript
+        function Person(name) {
+            this.name = name;
+        }
+        function Student(sex) {
+            this.sex = sex;
+        }
+        function inherit(name, sex) {
+            Person.call(this, name);
+            Student.apply(this, [sex]);
+        }
+        var inherit = new inherit('ppp', 'male');
+    ```
+
+    - 共享原型
+    ```javascript
+        Father.prototype.name = 'Deng';
+        function Father() {}
+        function Son() {}
+
+        function inherit(Target, Orgin) {
+            Target.prototype = Origin.prototype;
+        }
+        inherit(Son, Father);
+        var father = new Father();
+        var son = new Son();
+    ```
+      
+    - 圣杯模式
+    ```javascript
+        function inherit(Target, Origin) {
+            function F() {}
+            F.prototype = Origin.prototype;
+            Target.prototype = new F();
+            Target.prototype.constructor = Target;
+            Target.prototype.uber = Origin.prototype;
+        }
+        Father.prototype.name = 'Deng';
+        function Father() {}
+        function Son() {}
+        inherit(Son, Father);
+        var father = new Father();
+        var son = new Son();
+    ```
+
+  
 
 
   
