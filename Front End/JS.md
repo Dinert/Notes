@@ -939,7 +939,663 @@
         var son = new Son();
     ```
 
+    - 深度克隆
+    ```javascript
+        function deepClone(origin, target) {
+            var target = target || {},
+                toStr = Object.prototype.toString,
+                arrStr = '[Object Array]';
+                for(var prop in origin) {
+                    if(origin.hasOwnProperty(prop)) {
+                        if(origin[prop] !== "null" && typeof origin[prop] === 'object') {
+                            if(toStr.call(origin[prop]) === arrStr) {
+                                target[prop] = [];
+                            }else {
+                                target[prop] = {}
+                            }
+                            deepClone(origin[prop], target[prop]);
+                        }else {
+                            target[prop] = origin[prop];
+                        }
+                    }
+                }
+            return target;
+        }
+    ```
+
+### 数组
+  + 定义
+  ```javascript
+    var arr = []
+    var arr1 = new Array(6);
+  ```
+
+  + 数组的读和写：不可溢出读，可以溢出写
+  ```javascript
+    var arr = [1, 2];
+    console.log(arr[2]);
+
+    var arr = [1, 2];
+        arr[2] = 3;
+    console.log(arr);
+  ```
+
+  + 数组常用的方法
+    - 可改变原数组
+    - 反转：`reverse`
+    - 在最后一位添加值：`push`
+    - 把最后一位剪切出去：`pop`
+    - 从第一位开始加值：`unshift`
+    - 减掉开始第一位的值：`shift`
+    - 从第几位开始，截取多少长度，添加新数据：`splice`
+    - 给数组排序：`sort`
+    ```javascript
+        var arr = [1, 2, 3, 4, 5, 6];
+        arr.reverse();
+        arr.push(7);
+        arr.pop();
+        arr.unshift(-1, 0);
+        arr.splice(6, 0, 7, 8, 9);
+
+        arr.sort(function (a, b) {
+            return a - b;
+        });
+    ```
+
+    - 不改变原数组
+    - 数组连接：`concat`
+    - 把数组当做字符串展示：`toString`
+    - 从该位开始截取，截取到该位：`slice`
+    - 括号里面需要字符串，不使用就默认用逗号连接：`join`
+    - 拆分方法：`split`
+    ```javascript
+        var arr = [1, 2, 3, 4, 5, 6];
+        var arr1 = [7,8];
+        var arr2 = arr.concat(arr1);
+        console.log(arr2);
+
+        var arr = [1, 2, 3, 4, 5, 6];
+        var arr1 = arr.toString();
+        console.log(arr1);
+
+        var arr = [1, 2, 3, 4, 5, 6];
+        var arr1 = arr.slice();
+        var arr2 = arr.slice(3);
+        var arr3 = arr.slice(3, 6);
+        console.log(arr1);
+
+        var arr = [1, 2, 3, 4, 5, 6];
+        var arr1 = arr.join('-');
+            arr2 = arr1.split('-');
+            arr2 = arr1.split('4');
+        console.log(arr2);
+    ```
+
+### 类数组
+  + 可以利用属性名模拟数组的特性
+  + 可以动态的增长legth属性
+  + 如果强行让类数组调用push方法，则会根据length属性值的位置进行属性的扩充
+  ```javascript
+    function test() {
+        console.log(arguments.length);
+        arguments.push(7);
+    }
+    test(1, 2, 4, 5, 5);
+  ```
   
+  + 类数组的基本形态
+  ```javascript
+    var obj = {
+        '0': 'a',
+        '1': 'b',
+        '2': 'c',
+        length: 3,
+        push: Array.prototype.push
+    }
+    obj.push('d');
+  ```
+
+  + 类数组的完整形态
+  ```javascript
+    var obj = {
+        '0': 'a',
+        '1': 'b',
+        '2': 'c',
+        length: 3,
+        push: Array.prototype.push,
+        splice: Array.prototype.splice
+    }
+    obj.push('d');
+  ```
+
+  + obj输出是？
+  ```javascript
+    var obj = {
+        '2': 'a',
+        '3': 'b',
+        length: 2,
+        push: Array.prototype.push
+    }
+    obj.push('c');
+    obj.push('d');
+    console.log(obj);
+  ```
+
+  + `forEach`方法：只能遍历数组，不能遍历类数组
+  ```javascript
+    var arr = [1, 2, 3, 4, 5];
+    arr.forEach(function (value, index) {
+        console.log(value);
+        console.log(index);
+    });
+  ```
+
+  + `map`方法：只能遍历数组，不能遍历类数组
+  ```javascript
+    var arr = [1, 2, 3, 4, 5];
+    arr.map(function (value, index, array) {
+        console.log(value);
+        console.log(index);
+        console.log(array);
+    });
+  ```
+
+### this指向
+  + 全局里的this指向window，即 this === window
+  ```javascript
+    var a = 1322;
+    console.log(this.a);
+    console.log(window.a);
+    console.log(this === window);
+  ```
+
+  + 函数和立即执行函数里面的this指向window
+  ```javascript
+    function test() {
+        this.a = 1234;
+        console.log(this.a);
+        console.log(window.a);
+    }
+    test();
+    (function () {
+        this.a = 123;
+        console.log(this.a);
+        console.log(window.a);
+    }());
+  ```
+
+  + 构造函数里面的this，谁调用this就指向谁
+  ```javascript
+    Person.prototype = {
+        name: 'BMW',
+        sayName: function () {
+            console.log(this.name);
+        }
+    }
+    function Person() {
+        this.name = 'Merze'
+    }
+    var person = new Person();
+    console.log(person.sayName());
+    connsole.log(Person.prototype.sayName());
+  ```
+
+  + 对象的this指向自身，谁调用this就指向谁
+  ```javascript
+    var obj = {
+        name: function ()  {
+            console.log(this);
+        },
+        age: 18,
+        sayAge: function () {
+            console.log(this.age);
+        }
+    }
+  ```
+
+### ES5
+  + `try ...catch`
+  + `try catch`正常执行，没有错误时catch里不会输入，如果发生错误会停止后面代码的运行，报错信息会传入到catch里面并且不影响try catch外面的代码
+  ```javascript
+    try{
+        console.log('a');
+        console.log('b');
+        console.log('c');
+    }catch(e) {
+        console.log('e');
+        console.log(e.name + " : " + e.message);
+    }
+    console.log('d');
+  ```
+
+  + 报错的六种值信息
+    - eval()的使用与定义不一致：`eval()`
+    - 数值越界：`RangeError`
+    - 非法或不能识别的引用数值：`ReferenceError`
+    - 发生语法解析错误：`SyntaxError`
+    - 操作数类型错误：`TypeError`
+    - URI处理函数使用不当：`URIError`
+
+  + es5.0严格模式
+    - es5.0严格模式是指es3.0和es5.0产生冲突部分就是用es5.0，否则应用es3.0,不再兼容es3的一些不规则语法。使用全新的es5规范。
+    - 两种用法：全局严格模式，局部函数内严格模式（推荐）  
+    ```javascript
+        'use strict'
+        function test() {
+            console.log(arguments.callee);
+        }
+        test();
+        function demo() {
+            'use strict'
+            console.log(arguments.callee);
+        }
+        demo();
+    ```
+
+  + with可以改变作用域链
+    - 括号里面的代码会按照正常顺序执行，但是如果在括号里面添加了对象，就会把对象当做with要执行的代码体的作用域链的最顶端。es5语法不支持
+    ```javascript
+        var obj = {
+            name: 'obj'
+        }
+        with(obj) {
+            console.log(name);
+        }
+    ```
+  
+  + eval能把字符串当成代码来执行，不建议使用。eval是魔鬼，因为会改变作用域链
+  ```javascript
+    'use strict';
+    var a = 123;
+    eval('console.log()')
+  ```  
+
+  + es5.0严格模式中：变量赋值前必须声明，局部this必须被赋值，拒绝重复属性和参数
+  ```javascript
+    'use strict'
+    function test() {
+        var a = b = 123;
+        console.log(this);
+    }
+    test();
+
+    function test(name, name) {
+        console.log(name);
+    }
+    test(1, 2);
+  ```
+
+### ES6
+  + 块级作用域，用let的方式声明一个变量
+  ```javascript
+    if(true) {
+        let a = 123;
+        let b = 234;
+    }
+    console.log(a);
+    console.log(b);
+  ```
+
+  + 恒量const，只能赋一次值！
+  ```javascript
+    const arr = []
+    console.log(arr);
+          arr = {}
+  ```
+
+  + 解构数组
+  ```javascript
+    function breakfast() {
+        return ['apple', 'Tea', 'orange'];
+    }
+    var temp = breakfast(),
+        dessert = temp[0],
+        drink = temp[1],
+        fruit = temp[2];
+    console.log(dessert, drink, fruit);
+
+    function breakfast() {
+        return ['apple', 'Tea', 'orange'];
+    }
+    let [dessert, Tea, fruit] = breakfast();
+    console.log(dessert, Tea, fruit);
+  ```
+
+  + 解构对象
+  ```javascript
+    function breakfast() {
+        return {dessert: 'apple', drink: 'Tea', fruit: 'apple'}
+    }
+    let {dessert: dessert, drink: drink, fruit: fruit} = breakfast();
+
+    function breakfast() {
+        return {dessert: 'apple', drink: 'Tea', fruit: 'banner'}
+    }
+    let {dessert, drink, fruit} = breakfast();
+    console.log(dessert, drink, fruit);
+  ```
+
+  + 模板字符串，字符串的连接
+  ```javascript
+    let dessert = 'apple';
+        drink = 'tea';
+    let breakfast = `今天的早餐是${dessert} 与 ${drink} !`;
+    console.log(breakfast);
+  ```
+
+  + 带标签的模板字符串
+  ```javascript
+    let dessert = 'apple',
+        drink = 'tea';
+    let breakfast = kitchen`今天的早餐是${dessert} 与 ${drink} !`;
+
+    function kitchen(strings, ...values) {
+        console.log(strings);
+        console.log(values);
+        let result = '';
+        for(var i = 0; i < values.length; i ++) {
+            result += strings[i];
+            result += values[i];
+        }
+        result += strings[strings.length - 1];
+        return result;
+    }
+    console.log(breakfast);
+  ```
+
+  + 判断字符串里是不是以xxx开头的
+  ```javascript
+    let dessert = 'apple';
+        drink = 'tea';
+    let breakfast = `今天的早餐是 ${dessert} 与 ${drink} !`;
+    console.log(breakfast.startsWith('今天'));
+  ```
+
+  + 判断字符串里不是不以xxx结尾的
+  ```javascript
+    let dessert = 'apple';
+        drink = 'tea';
+    let breakfast = `今天的早餐是 ${dessert} 与 ${drink} !`;
+    console.log(breakfast.endsWith('tea !'));
+  ```
+
+  + 判断字符串里有没有xxx字符串
+  ```javascript
+    let dessert = 'apple';
+    let drink = 'tea';
+    let breakfast = `今天的早餐是 ${dessert} 与 ${drink} !`;
+    console.log(breakfast.includes('apple'));
+  ```
+
+  + 函数的默认参数值
+  ```javascript
+    function breakfast(dessert = 'apple', drink = 'tea') {
+        return `${dessert} ${drink}`;
+    }
+    console.log(breakfast());
+  ```
+
+  + 点点点（...）展开操作符
+  ```js
+    let fruits = ['apple', 'banner'];
+    let foods = ['orange', ...fruits];
+    console.log(fruits);
+    console.log(...fruits);
+    console.log(foods);
+  ```
+
+  + 点点点（...）操作符
+  ```js
+    function breakfast(dessert, drink, ...foods) {
+        console.log(dessert, drink, ...foods);
+    }
+    breakfast('apple', 'tea', 'banner', 'orange');
+  ```
+
+  + 解构函数的参数对象
+  ```js
+    function breakfast(dessert, drink {location, restaurant} = {}) {
+        console.log(dessert, drink, location, restaurant);
+    }
+    breakfast('apple', 'Milk', {location: '广东', restaurant: '董小姐'});
+  ```
+
+  + 箭头函数
+  ```js
+    let breakfast = dessert = dessert;
+    let breakfast = (dessert, drink) => dessert + drink;
+    let 
+  ```
+
+  + 对象表达式
+  ```js
+    let dessert = 'apple';
+    let drink = 'tea';
+    let food = {
+        dessert,
+        drink,
+        breakfast() {
+            return `${dessert} ${drink}`
+        }
+    }
+    console.log(food);
+    console.log(food.breakfast());
+  ```
+
+  + 对象两个值是否相等`Object.is()`
+  ```js
+    console.log(Object.is(NaN, NaN));
+    console.log(Object.is(+0, -0));
+    console.log(Object.is(null, undefined));
+  ```
+
+  + 把对象的值复制到另一个对象里
+  ```js
+    let breakfast = {}
+    Object.assign(breakfast, {
+        drink: 'tea'
+    });
+    console.log(breakfast);
+  ```
+
+  + 设置对象的prototype
+  ```js
+    let breakfast = {
+        getDrink() {
+            return 'tea'
+        }
+    }
+    let dinner = {
+        getDrink() {
+            return 'beer'
+        }
+    }
+    let sunday = Object.create(breakfast);
+    console.log(sunday.getDrink());
+    console.log(Object.getPrototypeOf(sunday) === breakfast);
+    Object.setPrototypeOf(sunday, dinner);
+    console.log(sunday.getDrink());
+    console.log(Object.getPrototypeOf(sunday) === dinner);
+  ```
+
+  + __设置对象的proto__
+  ```js
+    let breakfast = {
+        getDrink() {
+            return 'tea'
+        }
+    }
+    let dinner = {
+        getDrink() {
+            return 'beer'
+        }
+    }
+
+    let sunday = {
+        __proto__: breakfast
+    }
+    console.log(sunday.getDrink());
+    console.log(Object.getPrototypeOf(sunday) === breakfast);
+    sunday.__proto__ = dinner;
+    console.log(sunday.getDrink());
+    console.log(Object.getPrototypeOf(sunday) === dinner);
+  ```
+
+  + super
+  ```js
+    let breakfast = {
+        getDrink() {
+            return 'tea';
+        }
+    }
+    let sunday = {
+        __proto__: breakfast,
+        getDrink() {
+            return super.getDrink() + 'beer';
+        }
+    }
+    console.log(sunday.getDrink());
+    console.log(Object.getPrototypeOf(sunday) === breakfast);
+  ```
+
+  + 迭代器（Iterators）
+  ```js
+    function chef(foods) {
+        let i = 0;
+        return {
+            next() {
+                let done = (i >= foods.length);
+                let value = !done ? foods[i ++ ] : undefined;
+                return {
+                    value,
+                    done
+                }
+            }
+        }
+    }
+    var wanghao = chef(['apple', 'orange']);
+    console.log(wanghao.next());
+    console.log(wanghao.next());
+    console.log(wanghao.next());
+  ```
+
+  + 生成迭代器（Generators）
+  ```js
+    function* chef() {
+        yield 'apple';
+        yield 'banner';
+    }
+    let wanghao = chef();
+    console.log(wanghao.next());
+	console.log(wanghao.next());
+	console.log(wanghao.next());
+    function* chef(foods) {
+        for(var i = 0; i < foods.length; i ++) {
+            yield foods[i];
+        }
+    }
+    let wanghao = chef(['apple', 'tea']);
+    console.log(wanghao.next());
+    console.log(wanghao.next());
+    console.log(wanghao.next());
+  ```
+
+  + Class类
+  ```js
+    class Chef {
+        constructor(food) {
+            this.food = food;
+        }
+        cook() {
+            console.log(this.food);
+        }
+    }
+    let chef = new Chef('apple');
+    chef.cook();
+  ```
+
+  + get与set
+  ```js
+    class Chef{
+        constructor(food) {
+            this.food = food;
+            this.dish = []
+        }
+        get menu() {
+            return this.dish;
+        }
+        set menu(dish) {
+            this.dish.push(dish);
+        }
+        cook() {
+            console.log(this.food);
+        }
+    }
+    let chef = new Chef();
+    console.log(chef.menu = 'tea');
+    console.log(chef.menu = 'beer');
+    console.log(chef.menu);
+  ```
+
+  + static
+  ```js
+    class Chef{
+        static cook(food) {
+            console.log(food);
+        }
+    }
+    Chef.cook('apple');
+  ```
+
+  + 继承
+  ```js
+    class Person {
+        constructor(name, birthday) {
+            this.name = name;
+            this.birthday = birthday
+        }
+
+        intro() {
+            return `${this.name} ${this.birthday}`
+        }
+    }
+
+    class Chef extends Person{
+        constructor(name, birthday) {
+            super(name, birthday);
+        }
+        intro() {
+            return `${this.name} ${this.birthday}`
+        }
+    }
+
+    class Chef extends Person{
+        constructor(name, birthday) {
+            super(name, birthday);
+        }
+    }
+    let chef = new Chef('ppp', '1998-10-29');
+    console.log(chef.intro());
+  ```
+
+  + Set
+  ```js
+    let dessert = new Set();
+    console.log(dessert);
+    dessesrt.add('apple');
+    dessert.add('tea');
+    console.log(dessert);
+    console.log(dessert.size);
+    console.log(dessert.has('apple'));
+    dessert.delete('apple');
+    console.log(dessert);
+    dessert.forEach(dessert => {
+        console.log(dessert);
+    });
+    dessert.clear();
+    console.log(dessert);
+  ```
+
 
 
   
